@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Calendar 2025</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        color: white;
+        margin: 0;
+        padding: 0;
+        animation: fadeIn 1s ease-in;
+      }
+      .calendar-container {
+        margin-top: 20px;
+        animation: slideIn 1s ease-in-out;
+      }
+      .calendar-title {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #ffcc00;
+        animation: popIn 1s ease-in-out;
+      }
+      .calendar {
+        width: 400px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        color: black;
+        animation: fadeInUp 1s ease-in-out;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+      }
+      .header button {
+        background: linear-gradient(135deg, #9e8c70, #251a16);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background 0.3s, transform 0.3s;
+      }
+      .header button:hover {
+        background: linear-gradient(135deg, #ff5722, #ff9800);
+        transform: scale(1.1);
+      }
+      .weekdays,
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        padding-top: 10px;
+      }
+      .weekdays div {
+        font-weight: bold;
+        padding: 10px;
+        background: #d8d2b9;
+        color: black;
+        border-radius: 5px;
+        animation: fadeIn 1s ease-in-out;
+      }
+      .day {
+        padding: 15px;
+        background: linear-gradient(135deg, #2e2f30, #676d72);
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s, transform 0.3s;
+        animation: fadeInUp 0.5s ease-in-out;
+        color: white;
+      }
+      .day:hover {
+        background: linear-gradient(135deg, #64b5f6, #1976d2);
+        cursor: pointer;
+        transform: scale(1.1);
+      }
+      .today {
+        background: #ff9800;
+        color: rgb(235, 221, 221);
+        font-weight: bold;
+      }
+      .holiday {
+        background: linear-gradient(135deg, #d32f2f, #f44336) !important;
+        color: white;
+        font-weight: bold;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar-container">
+      <div class="calendar-title">2025 Calendar</div>
+      <div class="calendar">
+        <div class="header">
+          <button onclick="prevMonth()">&#9665;</button>
+          <h2 id="month-year"></h2>
+          <button onclick="nextMonth()">&#9655;</button>
+        </div>
+        <div class="weekdays">
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+        </div>
+        <div class="days" id="days"></div>
+      </div>
+    </div>
+    <script>
+      let currentMonth = new Date().getMonth();
+      let currentYear = 2025;
+      let holidays = ['2025-01-01', '2025-08-15', '2025-12-25'];
+
+      function renderCalendar() {
+        const daysContainer = document.getElementById('days');
+        const monthYear = document.getElementById('month-year');
+        const months = [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December',
+        ];
+
+        monthYear.innerText = `${months[currentMonth]} ${currentYear}`;
+        daysContainer.innerHTML = '';
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+          const emptyDiv = document.createElement('div');
+          daysContainer.appendChild(emptyDiv);
+        }
+
+        for (let day = 1; day <= lastDate; day++) {
+          const dayDiv = document.createElement('div');
+          dayDiv.classList.add('day');
+          dayDiv.innerText = day;
+
+          let dateString = `${currentYear}-${(currentMonth + 1)
+            .toString()
+            .padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+          if (
+            new Date().getDate() === day &&
+            new Date().getMonth() === currentMonth &&
+            new Date().getFullYear() === currentYear
+          ) {
+            dayDiv.classList.add('today');
+          }
+          if (
+            new Date(currentYear, currentMonth, day).getDay() === 0 ||
+            holidays.includes(dateString)
+          ) {
+            dayDiv.classList.add('holiday');
+          }
+
+          daysContainer.appendChild(dayDiv);
+        }
+      }
+      renderCalendar();
+    </script>
+  </body>
+</html>
